@@ -13,7 +13,7 @@ Function Find-PowerCLI {
     [CmdletBinding()]
 
     #Get the module
-    $PowerCLI = Get-Module -Name VMware.PowerCLI
+    $PowerCLI = Get-Module -Name VMware.PowerCLI -ListAvailable
 
     #If a module is found, return true, otherwise return false
     If ($PowerCLI -eq $Null) {
