@@ -3,9 +3,8 @@ Function Get-VMStaleSnapshot {
     [CmdletBinding()]
     Param (
 
-        [VMware.VimAutomation.ViCore.Impl.V1.VM.UniversalVirtualMachineImpl]$VirtualMachine,
-
-
+        [Parameter(ValueFromPipeline=$True,ValueFromPipelineByPropertyName=$True)]
+        $VirtualMachine
 
     )
 
@@ -42,6 +41,39 @@ Function Get-VMStaleSnapshot {
     }
 
     Process {
+
+        #Attempt to get the virtual machines
+        Try {
+
+            If ($VirtualMachine) {
+
+                $VM = Get-VM -Name $VirtualMachine
+
+            }
+            Else {
+
+                $VM = Get-VM
+
+            }
+    
+        }
+        #If it fails because the session isn't connected to a server, present a specific error message
+        Catch [VMware.VimAutomation.Sdk.Types.V1.ErrorHandling.VimException.ViServerConnectionException]{
+
+            Write-Error "Not connected to a server!"
+            Break
+
+        }
+        #Present the error message in any other case
+        Catch {
+
+            Write-Error $_
+            Break
+
+        }
+
+        #Get snapshots for each virtual machine that are older than the specified number of days
+        $VM | Get-Snapshot | Select-Object VM, Name, Created, Description #| Format-Table
 
     }
 
