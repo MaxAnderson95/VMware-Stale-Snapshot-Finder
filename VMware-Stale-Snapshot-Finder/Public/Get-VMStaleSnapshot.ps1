@@ -4,7 +4,9 @@ Function Get-VMStaleSnapshot {
     Param (
 
         [Parameter(ValueFromPipeline=$True,ValueFromPipelineByPropertyName=$True)]
-        $VM
+        $VM,
+
+        [DateTime]$Date
 
     )
 
@@ -72,8 +74,17 @@ Function Get-VMStaleSnapshot {
 
         }
 
-        #Get snapshots for each virtual machine that are older than the specified number of days
-        $VirtualMachine | Get-Snapshot | Select-Object VM, Name, Created, Description
+        #Get snapshots for each virtual machine
+        $Snapshot = $VirtualMachine | Get-Snapshot | Select-Object VM, Name, Created, Description
+
+        #If a date parameter is specified, filter results for snapshots taken older than the specified date
+        If ($Date) {
+
+            $Snapshot = $Snapshot | Where-Object { $_.Created -lt $Date }
+
+        }
+
+        Write-Output $Snapshot
 
     }
 
