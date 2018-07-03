@@ -99,6 +99,7 @@ Function Get-VMStaleSnapshot {
 
         }
 
+        #Output the snapshot objects to the screen
         Write-Output $Snapshot
 
     }
