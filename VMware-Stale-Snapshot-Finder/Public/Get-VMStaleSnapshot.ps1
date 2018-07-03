@@ -62,7 +62,7 @@ Function Get-VMStaleSnapshot {
         #If it fails because the session isn't connected to a server, present a specific error message
         Catch [VMware.VimAutomation.Sdk.Types.V1.ErrorHandling.VimException.ViServerConnectionException]{
 
-            Write-Error "Not connected to a server!"
+            Write-Error "Not connected to a server! Use 'Connect-VIServer' to connect to a VMware host or vCenter installation."
             Break
 
         }
