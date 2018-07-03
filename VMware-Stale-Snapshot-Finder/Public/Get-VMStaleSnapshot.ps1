@@ -82,7 +82,7 @@ Function Get-VMStaleSnapshot {
         #Get snapshots for each virtual machine
         $Snapshot = $VirtualMachine | Get-Snapshot | Select-Object VM, Name, Created, Description
 
-        #If a date parameter is specified, filter results for snapshots taken older than the specified date
+        #Based on whether a date time object or a number of days is specified, get a list of snapshots and filter them
         Switch ($PSCmdlet.ParameterSetName) {
 
             'DateTimeObject' {
