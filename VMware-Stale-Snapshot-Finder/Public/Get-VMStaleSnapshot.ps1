@@ -30,6 +30,8 @@ Function Get-VMStaleSnapshot {
         }
         Catch {
 
+            Write-Error "There was an error importing the VMware.VimAutomation.Core module"
+
         }
         
     }
