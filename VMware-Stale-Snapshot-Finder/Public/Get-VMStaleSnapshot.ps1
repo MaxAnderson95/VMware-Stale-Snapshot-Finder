@@ -3,10 +3,15 @@ Function Get-VMStaleSnapshot {
     [CmdletBinding()]
     Param (
 
-        [Parameter(ValueFromPipeline=$True,ValueFromPipelineByPropertyName=$True)]
+        [Parameter(ValueFromPipeline=$True,ValueFromPipelineByPropertyName=$True,ParameterSetName='DateTimeObject')]
+        [Parameter(ValueFromPipeline=$True,ValueFromPipelineByPropertyName=$True,ParameterSetName='Days')]
         $VM,
 
-        [DateTime]$Date
+        [Parameter(Mandatory=$True,ParameterSetName='DateTimeObject')]
+        [DateTime]$Date,
+
+        [Parameter(Mandatory=$True,ParameterSetName='Days')]
+        [Int]$Days
 
     )
 
@@ -78,9 +83,19 @@ Function Get-VMStaleSnapshot {
         $Snapshot = $VirtualMachine | Get-Snapshot | Select-Object VM, Name, Created, Description
 
         #If a date parameter is specified, filter results for snapshots taken older than the specified date
-        If ($Date) {
+        Switch ($PSCmdlet.ParameterSetName) {
 
-            $Snapshot = $Snapshot | Where-Object { $_.Created -lt $Date }
+            'DateTimeObject' {
+
+                $Snapshot = $Snapshot | Where-Object { $_.Created -lt $Date }
+                
+            }
+
+            'Days' {
+
+                $Snapshot = $Snapshot | Where-Object { $_.Created -lt (Get-Date).AddDays(-$Days) }
+
+            }
 
         }
 
