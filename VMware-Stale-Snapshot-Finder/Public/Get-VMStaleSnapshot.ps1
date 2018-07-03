@@ -5,7 +5,7 @@ Function Get-VMStaleSnapshot {
 
         [Parameter(ValueFromPipeline=$True,ValueFromPipelineByPropertyName=$True,ParameterSetName='DateTimeObject')]
         [Parameter(ValueFromPipeline=$True,ValueFromPipelineByPropertyName=$True,ParameterSetName='Days')]
-        $VM,
+        [object[]]$VM,
 
         [Parameter(Mandatory=$True,ParameterSetName='DateTimeObject')]
         [DateTime]$Date,
