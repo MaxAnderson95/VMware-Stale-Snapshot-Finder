@@ -3,6 +3,10 @@ Function Get-VMStaleSnapshot {
     [CmdletBinding()]
     Param (
 
+        [VMware.VimAutomation.ViCore.Impl.V1.VM.UniversalVirtualMachineImpl]$VirtualMachine,
+
+
+
     )
 
     Begin {
@@ -31,6 +35,7 @@ Function Get-VMStaleSnapshot {
         Catch {
 
             Write-Error "There was an error importing the VMware.VimAutomation.Core module"
+            Break
 
         }
         
