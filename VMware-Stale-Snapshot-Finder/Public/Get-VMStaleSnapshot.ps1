@@ -20,12 +20,7 @@ Function Get-VMStaleSnapshot {
         $WarningPreference = "SilentlyContinue"
 
         #Check for the module
-        If (Find-PowerCLI -eq $True) {
-
-            Write-Verbose "PowerCLI module found"
-
-        }
-        Else {
+        If (Find-PowerCLI -eq $False) {
 
             Write-Error "PowerCLI module not found!"
             Break
@@ -35,7 +30,11 @@ Function Get-VMStaleSnapshot {
         #Import the module checking for any errors
         Try {
 
-            Import-Module -Name "VMware.VimAutomation.Core"
+            If ((Get-Module -Name VMware.VimAutomation.Core) -eq $Null) {
+            
+                Import-Module -Name "VMware.VimAutomation.Core"
+
+            }
 
         }
         Catch {
