@@ -19,8 +19,13 @@ Function Get-VMStaleSnapshot {
 
         $WarningPreference = "SilentlyContinue"
 
+        Find-PowerCLI
+
         #Check for the module
-        If (Find-PowerCLI -eq $False) {
+        If (Find-PowerCLI -eq $True) {
+
+        }
+        Else {
 
             Write-Error "PowerCLI module not found!"
             Break
@@ -31,7 +36,8 @@ Function Get-VMStaleSnapshot {
         Try {
 
             If ((Get-Module -Name VMware.VimAutomation.Core) -eq $Null) {
-            
+
+                Write-Verbose "Attempting to import the module"
                 Import-Module -Name "VMware.VimAutomation.Core"
 
             }
@@ -39,6 +45,7 @@ Function Get-VMStaleSnapshot {
         }
         Catch {
 
+            Write-Verbose "Attempting to import the module"
             Write-Error "There was an error importing the VMware.VimAutomation.Core module"
             Break
 
@@ -53,11 +60,13 @@ Function Get-VMStaleSnapshot {
 
             If ($VM) {
 
+                Write-Verbose "Getting a list of virtual machines from user input."
                 $VirtualMachine = Get-VM -Name $VM
 
             }
             Else {
 
+                Write-Verbose "Getting a list of all virtual machines."
                 $VirtualMachine = Get-VM
 
             }
@@ -79,6 +88,7 @@ Function Get-VMStaleSnapshot {
         }
 
         #Get snapshots for each virtual machine
+        Write-Verbose "Getting a list of snapshots from the list of VMs."
         $Snapshot = $VirtualMachine | Get-Snapshot | Select-Object VM, Name, Created, Description
 
         #Based on whether a date time object or a number of days is specified, get a list of snapshots and filter them
@@ -86,12 +96,14 @@ Function Get-VMStaleSnapshot {
 
             'DateTimeObject' {
 
+                Write-Verbose "Datetime object specified. Getting a list of snapshots and filtering them for snapshots taken before $Date"
                 $Snapshot = $Snapshot | Where-Object { $_.Created -lt $Date }
                 
             }
 
             'Days' {
 
+                Write-Verbose "Number of days specified. Getting a list of snapshots and filtering them for snapshots taken more than $Days ago."
                 $Snapshot = $Snapshot | Where-Object { $_.Created -lt (Get-Date).AddDays(-$Days) }
 
             }
